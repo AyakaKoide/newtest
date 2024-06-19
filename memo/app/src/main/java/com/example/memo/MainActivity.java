@@ -1,7 +1,30 @@
+package com.example.memo;
+
+import android.os.Bundle;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class MemoApp {
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+    }
+
     private static ArrayList<String> memos = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
 
@@ -43,7 +66,6 @@ public class MemoApp {
         memos.add(memo);
         System.out.println("メモを追加しました。");
     }
-
     private static void displayMemos() {
         System.out.println("------ メモ一覧 ------");
         for (int i = 0; i < memos.size(); i++) {
