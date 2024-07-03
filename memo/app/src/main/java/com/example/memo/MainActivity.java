@@ -1,76 +1,66 @@
-package com.example.memo;
+package com.example.memo;import android.content.Intent;
 
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private RecyclerView recyclerView;
+    private NoteAdapter noteAdapter;
+    private List<Note> noteList;
+
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        recyclerView = findViewById(R.id.recyclerView);
+        FloatingActionButton fab = findViewById(R.id.fab);
+
+        noteList = new ArrayList<>();
+        noteAdapter = new NoteAdapter(noteList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(noteAdapter);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, NewNoteActivity.class);
+                startActivityForResult(intent, 1);
+            }
         });
     }
 
-    private static ArrayList<String> memos = new ArrayList<>();
-    private static Scanner scanner = new Scanner(System.in);
-
-    public static void main(String[] args) {
-        boolean exit = false;
-
-        while (!exit) {
-            System.out.println("メモアプリ");
-            System.out.println("1. メモを追加する");
-            System.out.println("2. メモを表示する");
-            System.out.println("3. 終了する");
-            System.out.print("選択してください: ");
-
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline character
-
-            switch (choice) {
-                case 1:
-                    addMemo();
-                    break;
-                case 2:
-                    displayMemos();
-                    break;
-                case 3:
-                    exit = true;
-                    System.out.println("アプリを終了します。");
-                    break;
-                default:
-                    System.out.println("無効な選択です。もう一度選んでください。");
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            // 新しいメモを追加するロジック
+            if (data != null) {
+                String noteText = data.getStringExtra("noteText");
+                Note newNote = new Note(noteText, "default");  // デフォルトのテーマを使用
+                noteList.add(newNote);
+                noteAdapter.notifyDataSetChanged();
             }
         }
-
-        scanner.close();
+    }
+    public void openNewNoteActivity(View view) {
+        Intent intent = new Intent(this, NewNoteActivity.class);
+        startActivity(intent);
     }
 
-    private static void addMemo() {
-        System.out.print("追加するメモの内容を入力してください: ");
-        String memo = scanner.nextLine();
-        memos.add(memo);
-        System.out.println("メモを追加しました。");
-    }
-    private static void displayMemos() {
-        System.out.println("------ メモ一覧 ------");
-        for (int i = 0; i < memos.size(); i++) {
-            System.out.println((i + 1) + ". " + memos.get(i));
-        }
-        System.out.println("---------------------");
-    }
 }
