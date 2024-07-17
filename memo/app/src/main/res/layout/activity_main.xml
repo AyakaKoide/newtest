@@ -19,4 +19,8 @@
         android:layout_margin="16dp"
         android:src="@android:drawable/ic_input_add" />
 
+    <!-- ここにEditTextとButtonのコードを追加 -->
+
+
 </RelativeLayout>
+
