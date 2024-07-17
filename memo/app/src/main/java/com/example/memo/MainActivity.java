@@ -1,6 +1,6 @@
-package com.example.memo;import android.content.Intent;
+package com.example.memo;
 
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,18 +17,15 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
     private NoteAdapter noteAdapter;
     private List<Note> noteList;
-
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         FloatingActionButton fab = findViewById(R.id.fab);
 
         noteList = new ArrayList<>();
@@ -45,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -58,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     public void openNewNoteActivity(View view) {
         Intent intent = new Intent(this, NewNoteActivity.class);
         startActivity(intent);
     }
-
 }
